@@ -1,0 +1,18 @@
+---
+:source:
+  :path: test
+  :file: test_Sigfox.c
+:successes: []
+:failures:
+- :test: test_respuesta_comando_AT
+  :line: 41
+  :message: Expected 10 Was 3
+:ignores: []
+:counts:
+  :total: 1
+  :passed: 0
+  :failed: 1
+  :ignored: 0
+:stdout:
+- "frame OK\r ready1"
+:time: 0.003969958999732626
