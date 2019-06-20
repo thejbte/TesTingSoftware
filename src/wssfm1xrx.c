@@ -577,10 +577,10 @@ static void WSSFM1XRX_StringTX(WSSFM1XRXConfig_t *obj, char* WSSFM1XRX_String){
 
 /*Private Functions ***********************************************************************************************************************************************/
 static void WSSFM1XRX_ResetObject(WSSFM1XRXConfig_t *obj){
- //	memset( (void *) obj->RxFrame,0,obj->SizeBuffRx);
+ 	memset( (void *) obj->RxFrame,0,obj->SizeBuffRx);
 	obj->StatusFlag=WSSFM1XRX_DEFAULT;
 	obj->RxIndex=0;
-//	obj->RxReady=SF_FALSE;
+	obj->RxReady=SF_FALSE;
 	obj->State_Api = WSSFM1XRX_IDLE; /*verificar*/
 }
 

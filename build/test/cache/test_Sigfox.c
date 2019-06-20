@@ -68,27 +68,29 @@ void test_inicializacion(void) {
 
     uint8_t Bufferrx[10];
 
+      WrapperRX(Bufferrx);
 
+  for ( int k = 0; k <= 1; k++){
 
-    WrapperRX(Bufferrx);
-
-    while(Bufferrx[i] != '\0') {
+        while(Bufferrx[i] != '\0') {
 
             WSSFM1XRX_ISRRX(&Sigfox,Bufferrx[i++]);
 
         }
 
+        i = 0;
+
+        ret = WSSFM1XRX_CheckModule(&Sigfox,WSSFM1XRX_Wait_NonBlock);
+
+  }
 
 
-
-
-    ret = WSSFM1XRX_CheckModule(&Sigfox,WSSFM1XRX_Wait_NonBlock);
 
     UnityAssertEqualNumber((UNITY_INT)((WSSFM1XRX_OK_RESPONSE)), (UNITY_INT)((ret)), (
 
    ((void *)0)
 
-   ), (UNITY_UINT)(45), UNITY_DISPLAY_STYLE_INT);
+   ), (UNITY_UINT)(46), UNITY_DISPLAY_STYLE_INT);
 
 
 

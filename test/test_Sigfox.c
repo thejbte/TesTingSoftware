@@ -34,14 +34,15 @@ void test_inicializacion(void) {
 
     int i = 0;
     uint8_t Bufferrx[10];
-    
     WrapperRX(Bufferrx);
-    while(Bufferrx[i] != '\0') {
+    for ( int k = 0; k <= 1; k++){
+        while(Bufferrx[i] != '\0') {
             WSSFM1XRX_ISRRX(&Sigfox,Bufferrx[i++]); 
-        }
-    //printf(" la %s  pa %d ",Sigfox.RxFrame,Sigfox.RxReady,estado.tick_actual);
-    
-    ret = WSSFM1XRX_CheckModule(&Sigfox,WSSFM1XRX_Wait_NonBlock); // con block n funciona
+        } 
+        i = 0;
+        ret = WSSFM1XRX_CheckModule(&Sigfox,WSSFM1XRX_Wait_NonBlock); // Luego ya no envía por que ya envio pero el tick se cumple 
+  }
+    // y en el buffer esta la respuesta 
     TEST_ASSERT_EQUAL(WSSFM1XRX_OK_RESPONSE,ret);
   
 }
