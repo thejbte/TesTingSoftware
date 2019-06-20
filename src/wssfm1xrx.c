@@ -122,7 +122,7 @@ WSSFM1XRX_Return_t WSSFM1XRX_Wait_NonBlock(WSSFM1XRXConfig_t *obj, uint32_t msec
 		WSSFM1XRX_StartTick = obj->TICK_READ() ;/*tickRead_ms();*/
 		obj->State_W = WSSFM1XRX_W_RUNNING ;
 	}
-	  //printf("lala %d ",obj->TICK_READ());
+	
 	if( ( obj->TICK_READ() - WSSFM1XRX_StartTick) > msec ){ 
 		obj->State_W = WSSFM1XRX_W_IDLE;
 		obj->State_Api = WSSFM1XRX_IDLE; /*Cuando vence el tiempo mando el comando de nuevo*/
@@ -143,7 +143,9 @@ WSSFM1XRX_Return_t WSSFM1XRX_Wait_NonBlock(WSSFM1XRXConfig_t *obj, uint32_t msec
  * 			<< WSSFM1XRX_TIMEOUT >> if the time has expired
  */
 WSSFM1XRX_Return_t WSSFM1XRX_Wait_Block(WSSFM1XRXConfig_t *obj, uint32_t msec){
-	while( WSSFM1XRX_WAITING == WSSFM1XRX_Wait_NonBlock(obj, msec) ){
+	while( WSSFM1XRX_WAITING == WSSFM1XRX_Wait_NonBlock(obj, msec) )
+	{
+		
 	}
 	return WSSFM1XRX_TIMEOUT ;
 }
@@ -230,8 +232,8 @@ WSSFM1XRX_Return_t WSSFM1XRX_ResetModule(WSSFM1XRXConfig_t *obj ,WSSFM1XRX_WaitM
  * 			<< WSSFM1XRX_RSP_NOMATCH >> If response expected is not correct
  */
 WSSFM1XRX_Return_t WSSFM1XRX_CheckModule(WSSFM1XRXConfig_t *obj,WSSFM1XRX_WaitMode_t Wait ){
-	   
-	return WSSFM1XRX_SendRawMessage(obj,"AT\r","OK",NULL,Wait,WSSFM1XRX_GENERAL_TIME_DELAY_RESP); 
+	    
+	return  WSSFM1XRX_SendRawMessage(obj,"AT\r","OK",NULL,Wait,WSSFM1XRX_GENERAL_TIME_DELAY_RESP); 
 
 }
 
@@ -317,6 +319,7 @@ WSSFM1XRX_Return_t WSSFM1XRX_SendRawMessage(WSSFM1XRXConfig_t *obj,char* Payload
 		}
 	}
 	/*expected is confirmed in to WSSFM1XRX_WaitForResponse*/
+
 	RetValue = WSSFM1XRX_WaitForResponse(obj,ExpectedResponse,Wait,msec);
 
 	/*para que funcione block or non block*/
@@ -496,7 +499,6 @@ void WSSFM1XRX_ISRRX(WSSFM1XRXConfig_t *obj, const char RxChar){
 			obj->RxReady = SF_TRUE; /* Framed completed*/
 		}else
 			obj->DownLink = 0; /* Clear the downlink request */
-		printf("frame %s ready%d\n",obj->RxFrame , obj->RxReady);
 	}
 }
 
@@ -515,6 +517,7 @@ void WSSFM1XRX_ISRRX(WSSFM1XRXConfig_t *obj, const char RxChar){
 
 WSSFM1XRX_Return_t WSSFM1XRX_MatchResponse(WSSFM1XRXConfig_t *obj, char *expectedResponse){
 	uint8_t Rprocess = WSSFM1XRX_RSP_NOMATCH;
+
 	if(obj->RxReady){
 		if(expectedResponse != NULL){
 			if(strstr((const char *) obj->RxFrame,(char *)expectedResponse) != NULL) Rprocess = WSSFM1XRX_OK_RESPONSE;
@@ -574,10 +577,10 @@ static void WSSFM1XRX_StringTX(WSSFM1XRXConfig_t *obj, char* WSSFM1XRX_String){
 
 /*Private Functions ***********************************************************************************************************************************************/
 static void WSSFM1XRX_ResetObject(WSSFM1XRXConfig_t *obj){
-	memset( (void *) obj->RxFrame,0,obj->SizeBuffRx);
+ //	memset( (void *) obj->RxFrame,0,obj->SizeBuffRx);
 	obj->StatusFlag=WSSFM1XRX_DEFAULT;
 	obj->RxIndex=0;
-	obj->RxReady=SF_FALSE;
+//	obj->RxReady=SF_FALSE;
 	obj->State_Api = WSSFM1XRX_IDLE; /*verificar*/
 }
 
@@ -609,6 +612,7 @@ static WSSFM1XRX_Return_t WSSFM1XRX_WaitForResponse(WSSFM1XRXConfig_t *obj , cha
 	uint8_t retvalue = WSSFM1XRX_NONE, retvalueM = WSSFM1XRX_NONE;
 	retvalue =  Wait(obj,msec); /*Return WAITING or TIMEOUT*/
 	retvalueM = WSSFM1XRX_MatchResponse(obj,ExpectedResponse); /*Return Response ok or No match*/
+
 	return (retvalueM == WSSFM1XRX_OK_RESPONSE)? retvalueM  : retvalue  ;/*Delay NonBlocking or Non-blocking*/
 }
 

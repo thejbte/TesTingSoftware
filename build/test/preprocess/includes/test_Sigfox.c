@@ -1,4 +1,5 @@
 ---
 - unity.h
 - wssfm1xrx.h
+- Wrappers.h
 - build/temp/_test_Sigfox.c

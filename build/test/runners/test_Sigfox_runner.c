@@ -35,7 +35,7 @@ char* GlobalOrderError;
 /*=======External Functions This Runner Calls=====*/
 extern void setUp(void);
 extern void tearDown(void);
-extern void test_respuesta_comando_AT(void);
+extern void test_inicializacion(void);
 
 
 /*=======Suite Setup=====*/
@@ -70,7 +70,7 @@ int main(void)
 {
   suite_setup();
   UnityBegin("test_Sigfox.c");
-  RUN_TEST(test_respuesta_comando_AT, 37);
+  RUN_TEST(test_inicializacion, 31);
 
   return suite_teardown(UnityEnd());
 }
