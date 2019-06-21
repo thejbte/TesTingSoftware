@@ -4,7 +4,7 @@
   :file: test_Sigfox.c
 :successes:
 - :test: test_inicializacion
-  :line: 31
+  :line: 61
   :message: ''
 :failures: []
 :ignores: []
@@ -13,5 +13,13 @@
   :passed: 1
   :failed: 0
   :ignored: 0
-:stdout: []
-:time: 0.003986620999967272
+:stdout:
+- AT
+- AT
+- AT$P=2
+- AT$P=2
+- AT$GI?
+- AT$GI?
+- "AT$WR\r"
+- "AT$WR\r"
+:time: 0.002905413000007684

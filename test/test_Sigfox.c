@@ -2,22 +2,53 @@
 #include "wssfm1xrx.h"
 #include "Wrappers.h"
 
+/**=====================================================================
+ *         Testing Software Julian Bustamante
+ * =====================================================================
+*/
+
 char bufferRx[32];
 
+/**=====================================================================
+ *         Datos de comunicación
+ * =====================================================================
+*/
 paso_t ejemplo[] = {
 	{
 		.tx = "AT\r",  /*INICIALIZO MIEMBRO  de la estructura*/
-		.retardo_tx = 16,
+		.retardo_tx = 1501,
 		.rx = "OK\r",
-		.retardo_rx = 16,
+		.retardo_rx = 1501,
 	}, {
 		.tx = "AT$P=2\r",
 		.retardo_tx = 2,
 		.rx = "OK\r",
 		.retardo_rx = 1,
+	},
+    {
+		.tx = "AT$GI?\r",
+		.retardo_tx = 2,
+		.rx = "1,4\r",
+		.retardo_rx = 1,
+	}
+    ,
+    {
+		.tx = "AT$WR\r\r",
+		.retardo_tx = 2,
+		.rx = "OK\r",
+		.retardo_rx = 1,
+	}
+    ,
+    {
+		.rx = "OK\r",
+        .tx = "OK\r",
+		.retardo_tx = 2,
+		.retardo_rx = 1,
 	}
 };
 
+/*Para check channels*/
+Channels_t channels;
 
 // se ejecuta antes de cada test
 void setUp(void){
@@ -27,41 +58,58 @@ void setUp(void){
          sizeof(bufferRx), 4);
 }
 
-// El test case inicia el estado en cero y llama a la función de prueba
+
+/**=====================================================================
+ *         Test Secuencia levantar modulo  
+ * =====================================================================
+*/
 void test_inicializacion(void) {
-	estado.paso = 0;
+	char * rspPtr;
+    
+    estado.paso = 0;
     estado.tick_actual = 0;
 
-    int i = 0;
-    uint8_t Bufferrx[10];
-    WrapperRX(Bufferrx);
-    for ( int k = 0; k <= 1; k++){
-        while(Bufferrx[i] != '\0') {
-            WSSFM1XRX_ISRRX(&Sigfox,Bufferrx[i++]); 
-        } 
-        i = 0;
-        ret = WSSFM1XRX_CheckModule(&Sigfox,WSSFM1XRX_Wait_NonBlock); // Luego ya no envía por que ya envio pero el tick se cumple 
-  }
-    // y en el buffer esta la respuesta 
+    ret = WSSFM1XRX_CheckModule(&Sigfox,WSSFM1XRX_Wait_NonBlock); 
     TEST_ASSERT_EQUAL(WSSFM1XRX_OK_RESPONSE,ret);
-  
+    estado.paso++;
+    ret = WSSFM1XRX_Sleep(&Sigfox,WSSFM1XRX_Wait_NonBlock); 
+    TEST_ASSERT_EQUAL(WSSFM1XRX_OK_RESPONSE,ret);
+    estado.paso++;
+    ret = WSSFM1XRX_AskChannels(&Sigfox,WSSFM1XRX_Wait_NonBlock,&channels); 
+    TEST_ASSERT_EQUAL(WSSFM1XRX_OK_RESPONSE,ret);
+   // rspPtr=strchr((const char *)(ejemplo[estado.paso].rx ) , ',');
+    TEST_ASSERT_EQUAL(channels.x, *ejemplo[estado.paso].rx -'0' ) ;
+    TEST_ASSERT_EQUAL(channels.y, *(ejemplo[estado.paso].rx + 2) -'0' ) ;
+    estado.paso++;
+    ret = WSSFM1XRX_SaveParameters(&Sigfox,WSSFM1XRX_Wait_NonBlock); 
+    TEST_ASSERT_EQUAL(WSSFM1XRX_OK_RESPONSE,ret);
+
+    estado.paso++;
+    ret = WSSFM1XRX_MatchResponse(&Sigfox,ejemplo[estado.paso].tx); 
+    TEST_ASSERT_EQUAL(WSSFM1XRX_OK_RESPONSE,ret);
+
+
 }
 
+/**=====================================================================
+ *         Wrapper transmision por uart Precargo con la respuest   
+ * =====================================================================
+*/
 void wrapperTXFcn(void * str, char c){
-    static int i = 0;
+    static int index = 0;
+    int k = 0;
     static char buffer[10];
-    buffer[i++]= c;
-   
-    if(c == '\r'){
-        WrapperTX(buffer);
-    }
-}
-
-void simular_recepcion(void){
-    int i = 0;
+    buffer[index++]= c;
     uint8_t Bufferrx[10];
-    WrapperRX(Bufferrx);
-    while(Bufferrx != '\0') {
-            WSSFM1XRX_ISRRX(&Sigfox,Bufferrx[i++]); 
+    
+    if(c == '\r'){
+        index = 0;
+        // Precargo con la respuesta OK\r
+        WrapperRX(Bufferrx);
+        while(Bufferrx[k] != '\0') {
+            WSSFM1XRX_ISRRX(&Sigfox,Bufferrx[k++]); 
         }
+        WrapperTX(buffer);       //Verifica buffer Tx con lo trasmitido  
+        
+    }
 }

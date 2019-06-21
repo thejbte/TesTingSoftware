@@ -72,13 +72,13 @@
 /*Delays for expected response WISOL module------------------------------------------------*/
 
 /*Delay Time for WSSFM1XRX_SendMessage WISOL module [ms]*/
-#define WSSFM1XRX_SEND_MESSAGE_TIME_DELAY_RESP	    6
+#define WSSFM1XRX_SEND_MESSAGE_TIME_DELAY_RESP	    6000
 
 /*GENERAL DELAY TIME FOR COMMANDS [ms]*/
-#define WSSFM1XRX_GENERAL_TIME_DELAY_RESP	15
+#define WSSFM1XRX_GENERAL_TIME_DELAY_RESP	1500
 
 /*Delay Time for WSSFM1XRX_WakeUP WISOL module [ms]*/
-#define WSSFM1XRX_WAKEUP_TIME_DELAY_PULSE	1
+#define WSSFM1XRX_WAKEUP_TIME_DELAY_PULSE	100
 
 /*Delay Time for waiting WSSFM1XRX_WakeUP WISOL module start [ms]*/
 #define WSSFM1XRX_WAKEUP_WAIT_TIME_DELAY_RESP	300

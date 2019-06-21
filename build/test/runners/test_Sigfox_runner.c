@@ -70,7 +70,7 @@ int main(void)
 {
   suite_setup();
   UnityBegin("test_Sigfox.c");
-  RUN_TEST(test_inicializacion, 31);
+  RUN_TEST(test_inicializacion, 61);
 
   return suite_teardown(UnityEnd());
 }
